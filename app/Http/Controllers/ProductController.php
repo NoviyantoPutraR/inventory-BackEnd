@@ -25,7 +25,7 @@ class ProductController extends Controller
             $product->description = $request->get('description');
             $product->save();
 
-            return response()->json(['message' => 'Product berhasil ditambahkan'], 200);
+            return response()->json(['message' => 'Produk berhasil ditambahkan'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e], 500);
         }
@@ -36,9 +36,38 @@ class ProductController extends Controller
         try {
             $product = Product::findOrFail($id);
             $product->delete();
-            return response()->json(['message' => 'Product berhasil dihapus'], 200);
+            return response()->json(['message' => 'Produk berhasil dihapus'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Product tidak ditemukan'], 500);
+            return response()->json(['message' => 'Produk tidak ditemukan'], 500);
+        }
+    }
+
+    function edit($id)
+    {
+        try {
+            $product = Product::findOrFail($id);
+            return response()->json(['message' => 'Produk ditemukan', 'data' => $product], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Produk tidak ditemukan'], 404);
+        }
+    }
+
+    function update(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'required|string|max:1000',
+            ]);
+
+            $product = Product::findOrFail($id);
+            $product->name = $request->get('name');
+            $product->description = $request->get('description');
+            $product->save();
+
+            return response()->json(['message' => 'Produk berhasil diedit'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e], 500);
         }
     }
 }
